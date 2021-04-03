@@ -1,3 +1,8 @@
+Chat input Textarea designed for displaying html elements and emoji in the textarea. Since native textareas does not support displaying html elements, therefore it uses the contentEditable={true} for div. This react component is useful for chat/comments applications. User can define trigger points to display intellisense menu to choose the emoji or any html component given. For example ":" can be used to trigger emoji drop down menu or "@" can be used to trigger to tag users. If you find this component useful, please give your feedback and stars :) 
+
+![image](https://user-images.githubusercontent.com/69339367/113470938-44d60480-9416-11eb-80a6-df47d5038157.png)
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
