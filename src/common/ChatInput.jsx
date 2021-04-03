@@ -1,3 +1,9 @@
+/*
+Author: Zahid Hussain
+March 28, 2021
+ChatInput with Intellisense for Emoji and anyother character.
+*/
+
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useRef, useEffect } from "react";
 import ReactDOMServer from "react-dom/server";

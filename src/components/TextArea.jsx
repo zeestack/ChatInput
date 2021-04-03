@@ -1,3 +1,9 @@
+/*
+Author: Zahid Hussain
+March 28, 2021
+AutoInput with Intellisense for Emoji and anyother character.
+*/
+
 import React from "react";
 import { SentimentSatisfiedAltOutlined } from "@material-ui/icons";
 import AutoInput from "../common/ChatInput";
@@ -21,11 +27,12 @@ const TextArea = (props) => {
             return searchResult.map((item) => ({
               ...item,
               menuItem: `${item.native} ${item.colons}`,
-              //menuItem canbe string of HTML or React JSX literal element
+              //menuItem canbe string, HTML or React JSX literal element
             }));
           },
           outPutComponent: (selected) => {
             return selected.native;
+            //select element can string, HTML or a React component
             //return (props) => <Chip label={selected.native} {...props} />;
           },
         },
