@@ -39,7 +39,7 @@ function App() {
     };
   });
 
-  const handleCommentAdd = () => {
+  const handleCommentAdd = (value) => {
     store.dispatch({
       type: "comments/commentAdded",
       payload: { userId: currUser.userId, name: currUser.name, body: text },
@@ -118,7 +118,11 @@ function App() {
           </button>
         </div>
       ))}
-      <TextArea value={text} onChange={setText}></TextArea>
+      <TextArea
+        value={text}
+        onChange={setText}
+        onSend={handleCommentAdd}
+      ></TextArea>
       <button onClick={handleCommentAdd}>Add comment</button>
     </div>
   );

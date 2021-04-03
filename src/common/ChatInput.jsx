@@ -41,12 +41,13 @@ const TxtInput = styled.div`
 
 const ChatInput = (props) => {
   const {
-    onChange,
     id = "some-random-Id-1",
+    value = "",
     autoTrigger = [{}],
     PickerComponent = {},
     PickerIcon = SentimentSatisfied,
-    value = "",
+    onChange,
+    onSend,
   } = props;
 
   const EmojiPicker = withPopup(PickerComponent);
@@ -202,7 +203,10 @@ const ChatInput = (props) => {
           <IconBtn
             message="send"
             icon={<SendRounded />}
-            onClick={() => onChange(text)}
+            onClick={() => {
+              onChange(text);
+              if (onSend) onSend();
+            }}
           />
         </FlexContainer>
       </FlexContainer>

@@ -4,12 +4,13 @@ import AutoInput from "../common/ChatInput";
 import { Picker, emojiIndex } from "emoji-mart";
 
 const TextArea = (props) => {
-  const { value, onChange } = props;
+  const { value, onChange, onSend, ...rest } = props;
   //html value
   return (
     <AutoInput
       value={value}
       onChange={onChange}
+      onSend={onSend}
       PickerIcon={SentimentSatisfiedAltOutlined}
       PickerComponent={Picker}
       autoTrigger={[
@@ -29,6 +30,7 @@ const TextArea = (props) => {
           },
         },
       ]}
+      {...rest}
     />
   );
 };
