@@ -17,11 +17,13 @@ import Typography from "@material-ui/core/Typography";
 
 function App() {
   const store = useStore();
+  const [text, setText] = useState("Hello World");
   const [comms, setComms] = useState([]);
   const [users, setUsers] = useState([]);
-  const [text, setText] = React.useState("Hello World");
-  const [user, setUser] = React.useState("");
-  const [currUser, setCurrUser] = React.useState({});
+  const [user, setUser] = useState("");
+  const [currUser, setCurrUser] = useState({});
+
+  //const textRef = React.useRef();
 
   function stateUpdate() {
     const comments = getComments(store.getState());
@@ -40,10 +42,13 @@ function App() {
   });
 
   const handleCommentAdd = (value) => {
-    store.dispatch({
-      type: "comments/commentAdded",
-      payload: { userId: currUser.userId, name: currUser.name, body: text },
-    });
+    store.dispatch(
+      commentAdded({
+        userId: currUser.userId,
+        name: currUser.name,
+        body: value,
+      })
+    );
   };
   const handleRegisterUser = () => {
     store.dispatch(userAdded({ name: user }));
@@ -118,12 +123,8 @@ function App() {
           </button>
         </div>
       ))}
-      <TextArea
-        value={text}
-        onChange={setText}
-        onSend={handleCommentAdd}
-      ></TextArea>
-      <button onClick={handleCommentAdd}>Add comment</button>
+      <TextArea value={text} onChange={setText} onSend={handleCommentAdd} />
+      <button onClick={() => handleCommentAdd(text)}>Add comment</button>
     </div>
   );
 }

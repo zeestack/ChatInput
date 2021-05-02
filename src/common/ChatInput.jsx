@@ -57,19 +57,18 @@ const ChatInput = (props) => {
   } = props;
 
   const EmojiPicker = withPopup(PickerComponent);
-  const [text, setText] = useState(value);
   const [showEmoji, setShowEmoji] = useState(false);
   const [anchor, setAnchor] = useState(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [search, setSearch] = useState([]);
 
-  const inputRef = useRef(null);
-  const menuRef = useRef(null);
+  const inputRef = useRef(TxtInput);
+  const menuRef = useRef(StyledMenuList);
   const menuItemRef = useRef(null);
   const triggerRef = useRef(null);
 
   useEffect(() => {
-    if (inputRef.current.innerHTML === value) return;
+    if (inputRef.current.innerHTML === value) return null;
     if (inputRef && inputRef.current) {
       inputRef.current.innerHTML = value;
       placeCaretAtEnd(inputRef.current);
@@ -91,17 +90,14 @@ const ChatInput = (props) => {
     const trObject = triggerRef.current;
     const value = selected;
     const display = trObject.outPutComponent(value);
-    const newText = text;
+    const newText = inputRef.current.innerHTML;
     const texts = newText.split(trObject.trigger);
     const vkey = texts[texts.length - 1];
     newText.replace(`:${vkey}`, display);
     let upText = newText.replace(`${trObject.trigger}${vkey}`, "");
     upText = upText + getHTMLComponent(display);
-    Promise.resolve().then(() => {
-      setText(upText);
-      setSearch([]);
-      onChange(upText);
-    });
+    onChange(upText);
+    setSearch([]);
   }
 
   function getHTMLComponent(Component) {
@@ -152,7 +148,6 @@ const ChatInput = (props) => {
   }
 
   function handleInputChange(e) {
-    if (e.key === "Enter") e.preventDefault();
     const textValue = e.currentTarget.innerText || "";
     let dTrigger = {};
     for (let index = 0; index < autoTrigger.length; index++) {
@@ -163,10 +158,31 @@ const ChatInput = (props) => {
         break;
       }
     }
-    setText(e.currentTarget.innerHTML);
     setSearch(handleSearch(dTrigger, textValue));
     getCaretCoordinates(textValue[textValue.length - 1], dTrigger.trigger);
   }
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onChange(inputRef.current.innerHTML);
+      onSend(inputRef.current.innerHTML);
+    }
+
+    if (e.key === "Escape") setSearch([]);
+    if (e.key === "Tab") {
+      e.preventDefault();
+      if (menuItemRef && menuItemRef.current) {
+        inputRef.current.blur();
+        menuItemRef.current.focus();
+      }
+    }
+    return e.keyCode >= 38 && e.keyCode <= 40
+      ? menuItemRef && menuItemRef.current
+        ? menuItemRef.current.focus()
+        : inputRef.current.focus()
+      : inputRef.current.focus();
+  };
 
   return (
     <div>
@@ -174,28 +190,13 @@ const ChatInput = (props) => {
         <TxtInput
           id={id}
           ref={inputRef}
-          value={text}
+          value={inputRef.current.innerHTML}
           contentEditable={true}
           suppressContentEditableWarning={true}
-          //onKeyPress={(e) => (e.key === "Enter" ? e.preventDefault() : "")}
           onInput={handleInputChange}
-          onBlur={() => onChange(text)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") setSearch([]);
-            if (e.key === "Tab") {
-              e.preventDefault();
-              if (menuItemRef && menuItemRef.current) {
-                inputRef.current.blur();
-                menuItemRef.current.focus();
-              }
-            }
-            return e.keyCode >= 38 && e.keyCode <= 40
-              ? menuItemRef && menuItemRef.current
-                ? menuItemRef.current.focus()
-                : inputRef.current.focus()
-              : inputRef.current.focus();
-          }}
-        />
+          onBlur={() => onChange(inputRef.current.innerHTML)}
+          onKeyDown={handleKeyDown}
+        ></TxtInput>
 
         <FlexContainer align="center" justify="center">
           <IconBtn
@@ -210,8 +211,10 @@ const ChatInput = (props) => {
             message="send"
             icon={<SendRounded />}
             onClick={() => {
-              onChange(text);
-              if (onSend) onSend();
+              if (inputRef.current.innerHTML) {
+                onChange(inputRef.current.innerHTML);
+                if (onSend) onSend(inputRef.current.innerHTML);
+              }
             }}
           />
         </FlexContainer>
@@ -250,8 +253,8 @@ const ChatInput = (props) => {
         onClickAway={() => setShowEmoji(!showEmoji)}
         set="google"
         onSelect={(emoji) => {
-          setText(`${text}${emoji.native}`);
-          onChange(`${text}${emoji.native}`);
+          //setText(`${text}${emoji.native}`);
+          onChange(`${inputRef.current.innerHTML}${emoji.native}`);
         }}
         useButton={true}
         showPreview={false}
