@@ -36,7 +36,7 @@ const TxtInput = styled.div`
   width: calc(100% - 100px);
   height: 100%;
   text-align: start;
-  padding: 0.5em 0.5em 0.5em 0.5em;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   overflow: hidden;
   background-color: beige;
   border-radius: 16px;
@@ -54,6 +54,7 @@ const ChatInput = (props) => {
     PickerIcon = SentimentSatisfied,
     onChange,
     onSend,
+    ...rest
   } = props;
 
   const EmojiPicker = withPopup(PickerComponent);
@@ -147,6 +148,12 @@ const ChatInput = (props) => {
     }
   }
 
+  function resetTextInput() {
+    inputRef.current.innerText = "";
+    inputRef.current.innerHTML = "";
+    if (onChange) onChange(inputRef.current.innerText);
+  }
+
   function handleInputChange(e) {
     const textValue = e.currentTarget.innerText || "";
     let dTrigger = {};
@@ -163,14 +170,17 @@ const ChatInput = (props) => {
   }
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.ctrlKey && e.key === "Enter") {
+      inputRef.current.innerHTML = inputRef.current.innerHTML + "<br>";
+      placeCaretAtEnd(inputRef.current);
+    } else if (e.key === "Enter") {
       e.preventDefault();
+      if (!inputRef.current.innerHTML) return;
       onChange(inputRef.current.innerHTML);
       onSend(inputRef.current.innerHTML);
-    }
-
-    if (e.key === "Escape") setSearch([]);
-    if (e.key === "Tab") {
+      resetTextInput();
+    } else if (e.key === "Escape") setSearch([]);
+    else if (e.key === "Tab") {
       e.preventDefault();
       if (menuItemRef && menuItemRef.current) {
         inputRef.current.blur();
@@ -196,7 +206,8 @@ const ChatInput = (props) => {
           onInput={handleInputChange}
           onBlur={() => onChange(inputRef.current.innerHTML)}
           onKeyDown={handleKeyDown}
-        ></TxtInput>
+          {...rest}
+        />
 
         <FlexContainer align="center" justify="center">
           <IconBtn
@@ -213,7 +224,10 @@ const ChatInput = (props) => {
             onClick={() => {
               if (inputRef.current.innerHTML) {
                 onChange(inputRef.current.innerHTML);
-                if (onSend) onSend(inputRef.current.innerHTML);
+                if (onSend) {
+                  onSend(inputRef.current.innerHTML);
+                  resetTextInput();
+                }
               }
             }}
           />
@@ -254,6 +268,7 @@ const ChatInput = (props) => {
         set="google"
         onSelect={(emoji) => {
           //setText(`${text}${emoji.native}`);
+          setShowEmoji(false);
           onChange(`${inputRef.current.innerHTML}${emoji.native}`);
         }}
         useButton={true}

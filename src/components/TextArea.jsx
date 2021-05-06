@@ -9,7 +9,7 @@ import { SentimentSatisfiedAltOutlined } from "@material-ui/icons";
 import { Chip } from "@material-ui/core";
 import ChatInput from "../common/ChatInput";
 import { Picker, emojiIndex } from "emoji-mart";
-import FlexContainer from "../common/FlexContainer";
+import { lightBlue } from "@material-ui/core/colors";
 
 const TextArea = (props) => {
   const { value, onChange, onSend, ...rest } = props;
@@ -57,6 +57,7 @@ const TextArea = (props) => {
           },
         },
       ]}
+      style={{ background: "lightBlue" }}
       {...rest}
     />
   );

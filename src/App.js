@@ -23,8 +23,6 @@ function App() {
   const [user, setUser] = useState("");
   const [currUser, setCurrUser] = useState({});
 
-  //const textRef = React.useRef();
-
   function stateUpdate() {
     const comments = getComments(store.getState());
     const users = getUsers(store.getState());
